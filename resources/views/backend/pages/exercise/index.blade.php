@@ -122,6 +122,7 @@
                 <div class="jumbotron jumbotron-fluid">
                     <div class="container text-center">
                         <h1 class="display-4">Selamat semua soal latihan sudah terjawab dengan benar</h1>
+                        <h3 class="display-4">Nilai Anda: {{ $nilai ?? 0 }} </h3>
                         <p class="lead">Silahkan pilih kategori latihan lainya yang belum diselesaikan.</p>
                         <a href="{{ route('exercise.reset.all') . '?id=' . $category->id }}}}">
                             <p class="lead text-primary">Kerjakan Ulang</p>

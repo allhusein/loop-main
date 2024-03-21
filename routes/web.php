@@ -30,7 +30,7 @@ Route::prefix('/register-mahasiswa')->group(function () {
     Route::post('/', 'App\Http\Controllers\UserController@registerMahasiswaStore')->name('register.mahasiswa.store');
 });
 
-Route::prefix('admin')->middleware('auth')->group(function () {
+Route::prefix('loop')->middleware('auth')->group(function () {
     Route::resource('/category', 'App\Http\Controllers\CategoryController');
 
     Route::resource('/question', 'App\Http\Controllers\QuestionController');
@@ -41,6 +41,10 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::get('/preview', 'App\Http\Controllers\ExerciseController@preview')->name('preview');
     Route::post('/preview', 'App\Http\Controllers\ExerciseController@exercisePreviewCheck')->name('previewcheck');
     Route::post('/exercise/check', 'App\Http\Controllers\ExerciseController@exerciseCheck')->name('exercise.check');
-    Route::resource('/log', 'App\Http\Controllers\LogController');
-    Route::resource('/log-category-result', 'App\Http\Controllers\CategoryResultController');
+    Route::post('/exercise/result', 'App\Http\Controllers\ExerciseController@calculateScore')->name('exercise.result');
+    Route::post('/exercise/result', 'App\Http\Controllers\ExerciseController@show')->name('exercise.hasil');
+    Route::resource('/log-activity', 'App\Http\Controllers\LogController');
+    // Route::resource('/log-category-result', 'App\Http\Controllers\CategoryResultController');
+    Route::get('/log-activity-category-result/{user}', 'App\Http\Controllers\CategoryResultController@index')->name('log.category.result');
+    Route::resource('/log-activity-last-result', 'App\Http\Controllers\LastLogResultController');
 });

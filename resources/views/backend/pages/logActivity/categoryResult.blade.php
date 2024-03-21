@@ -14,11 +14,11 @@
                                 <tbody>
                                     <tr>
                                         <th>Nama</th>
-                                        <td>Value for Nama</td>
+                                        <td>{{ $user->name }}</td>
                                     </tr>
                                     <tr>
                                         <th>NIM</th>
-                                        <td>Value for NIM</td>
+                                        <td>{{ $user->nim }}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -42,10 +42,10 @@
                         </thead>
 
                         <tbody>
-                            @foreach ($categories as $category)
+                            @foreach ($user->categories as $category)
                                 <tr>
                                     <td>{{ $category->name }}</td>
-                                    <td>{{ $category->category }}</td>
+                                    <td>{{ $category->nilai }}</td>
                                     <td>
                                         <a href="#" class="btn btn-info btn-sm btn-edit">
                                             <i class="mdi mdi-eye"></i> see

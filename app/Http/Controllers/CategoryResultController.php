@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Category;
+use App\Models\Nilai;
+use App\Models\User;
 
 class CategoryResultController extends Controller
 {
@@ -12,10 +14,19 @@ class CategoryResultController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($userId)
     {
+        $user = User::find($userId);
         $categories = Category::all();
-        return view('backend.pages.logActivity.categoryResult', compact('categories'));
+
+        $user->categories = $categories->map(function ($category) use ($user) {
+            $category->nilai = Nilai::where('user_id', $user->id)
+                ->where('category_id', $category->id)
+                ->sum('nilai');
+            return $category;
+        });
+
+        return view('backend.pages.logActivity.categoryResult', compact('user'));
     }
 
     /**

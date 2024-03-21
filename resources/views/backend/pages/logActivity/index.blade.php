@@ -32,7 +32,7 @@
                                     <td>{{ $log->user->name }}</td>
                                     <td>{{ $log->user->nim }}</td>
                                     <td>
-                                        <a href="{{ route('log-category-result.index') }}"
+                                        <a href="{{ route('log.category.result', ['user' => $log->user->id]) }}"
                                             class="btn btn-info btn-sm btn-edit">
                                             <i class="mdi mdi-eye"></i> see
                                         </a>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Attempt;
+use Illuminate\Http\Request;
 
 class LastLogResultController extends Controller
 {
@@ -14,7 +15,7 @@ class LastLogResultController extends Controller
     public function index()
     {
         $result = Attempt::all();
-        return view('backend.pages.logActivity.index', compact('result'));
+        return view('backend.pages.logActivity.LastResult', compact('result'));
     }
 
     /**
