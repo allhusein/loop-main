@@ -10,7 +10,7 @@ class Question extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $guarded=[];
+    protected $guarded = [];
 
     public function answers()
     {
@@ -22,6 +22,10 @@ class Question extends Model
         return $this->belongsTo(Category::class);
     }
 
+    public function attempts()
+    {
+        return $this->belongsTo(Attempt::class);
+    }
     public function exercise()
     {
         return $this->hasMany(Exercise::class);

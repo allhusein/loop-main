@@ -46,6 +46,7 @@ Route::prefix('loop')->middleware('auth')->group(function () {
     Route::resource('/log', 'App\Http\Controllers\LogController');
     Route::resource('/confidence', 'App\Http\Controllers\ConfidenceController');
     Route::get('/confidence/{user}', 'App\Http\Controllers\ConfidenceController@show')->name('confidence.category.result');
+    Route::get('/confidence/{user}/{categoryId}', 'App\Http\Controllers\ConfidenceController@PerQuestion')->name('confidence.category.question.result');
 
     Route::get('/log-category-result/{user}', 'App\Http\Controllers\CategoryResultController@index')->name('log.category.result');
 

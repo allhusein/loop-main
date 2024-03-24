@@ -4004,3 +4004,7 @@ File: Responsive
   color:black !important;
 }
 /*# sourceMappingURL=style.css.map */
+
+.custom-width {
+    width: 15%; /* Adjust this value as needed */
+}

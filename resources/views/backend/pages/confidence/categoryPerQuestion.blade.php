@@ -1,7 +1,11 @@
-@extends('layouts.backend', ['title' => 'History Confidence Tag-Category Result'])
+@extends('layouts.backend', ['title' => 'History Confidence Tag-Sub Question Result'])
 
 @section('breadcrumb')
-    <li class="breadcrumb-item active"><a href="">History Confidence Tag-Category Result</a></li>
+    @if ($category && isset($category))
+        <li class="breadcrumb-item active">Sub Question Result | Category: {{ $category->name }}</li>
+    @else
+        <li class="breadcrumb-item active">Sub Question Result</li>
+    @endif
 @endsection
 @section('content-backend')
     <div class="row">
@@ -35,31 +39,23 @@
 
                         <thead>
                             <tr>
-                                <th>Category</th>
-                                <th>Poin Total</th>
+                                <th>Question</th>
                                 <th class="custom-width">Yakin + Benar</th>
                                 <th class="custom-width">Yakin + Salah</th>
                                 <th class="custom-width">Tidak Yakin + Benar</th>
                                 <th class="custom-width">Tidak Yakin + Salah</th>
-                                <th>Action</th>
+
                             </tr>
                         </thead>
 
                         <tbody>
-                            @foreach ($user->categories as $category)
+                            @foreach ($questions as $question)
                                 <tr>
-                                    <td>{{ $category->name }}</td>
-                                    <td>{{ $category->nilai }}</td>
-                                    <td>{{ $category->yakin_benar }}</td>
-                                    <td>{{ $category->yakin_salah }}</td>
-                                    <td>{{ $category->tidak_yakin_benar }}</td>
-                                    <td>{{ $category->tidak_yakin_salah }}</td>
-                                    <td>
-                                        <a href="{{ route('confidence.category.question.result', ['user' => $user->id, 'categoryId' => $category->id]) }}"
-                                            class="btn btn-info btn-sm btn-edit">
-                                            <i class="mdi mdi-eye"></i> see
-                                        </a>
-                                    </td>
+                                    <td>{{ $question->question }}</td>
+                                    <td>{{ $question->yakin_benar }}</td>
+                                    <td>{{ $question->yakin_salah }}</td>
+                                    <td>{{ $question->tidak_yakin_benar }}</td>
+                                    <td>{{ $question->tidak_yakin_salah }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
