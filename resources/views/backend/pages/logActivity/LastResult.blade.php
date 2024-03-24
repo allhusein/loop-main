@@ -1,72 +1,6 @@
 @extends('layouts.backend', ['title' => 'Log-Last Result'])
 
-<style>
-    .row {
-        display: flex;
-        flex-wrap: wrap;
-        margin-right: -15px;
-        margin-left: -15px;
-    }
 
-    .col-lg-3,
-    .col-6 {
-        position: relative;
-        width: 100%;
-        padding-right: 15px;
-        padding-left: 15px;
-    }
-
-    .small-box {
-        position: relative;
-        display: block;
-        overflow: hidden;
-        height: 90px;
-        text-align: center;
-        color: #fff;
-    }
-
-    .small-box .inner {
-        padding: 10px;
-    }
-
-    .small-box .icon {
-        position: absolute;
-        top: auto;
-        bottom: 0;
-        right: 0;
-        padding: 10px;
-    }
-
-    .small-box .icon>.ion {
-        font-size: 50px;
-        display: inline-block;
-        margin-right: 10px;
-    }
-
-    .small-box-footer {
-        display: block;
-        padding: 3px 0;
-        background: rgba(0, 0, 0, 0.1);
-        color: #fff;
-        text-align: center;
-    }
-
-    .bg-info {
-        background-color: #17a2b8 !important;
-    }
-
-    .bg-success {
-        background-color: #28a745 !important;
-    }
-
-    .bg-warning {
-        background-color: #ffc107 !important;
-    }
-
-    .bg-danger {
-        background-color: #dc3545 !important;
-    }
-</style>
 
 @section('breadcrumb')
     <li class="breadcrumb-item active"><a href="">Activity Last Result</a></li>
@@ -81,12 +15,12 @@
                             <table class="table table-striped table-bordered">
                                 <tbody>
                                     <tr>
-                                        <th>Percobaan Pengerjaan</th>
-                                        <td>Value for Nama</td>
+                                        <th>Nama</th>
+                                        <td>{{ $user->name }}</td>
                                     </tr>
                                     <tr>
-                                        <th>Benar</th>
-                                        <td>Value for NIM</td>
+                                        <th>NIM</th>
+                                        <td>{{ $user->nim }}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -104,7 +38,7 @@
                             <!-- small box -->
                             <div class="small-box bg-info">
                                 <div class="inner">
-                                    <h3>150</h3>
+                                    <h3>{{ $totalAttempts }}</h3>
 
                                     <p>Total Percobaan</p>
                                 </div>
@@ -118,12 +52,11 @@
                             <!-- small box -->
                             <div class="small-box bg-success">
                                 <div class="inner">
-                                    <h3>53<sup style="font-size: 20px">%</sup></h3>
-
+                                    <h3>{{ $totalCorrectAnswers }}<sup style="font-size: 20px"></sup></h3>
                                     <p>Jawaban benar</p>
                                 </div>
                                 <div class="icon">
-                                    <i class="ion ion-stats-bars"></i>
+                                    <i class="mdi mdi-emoticon"></i>
                                 </div>
                             </div>
                         </div>
@@ -134,12 +67,12 @@
                             <!-- small box -->
                             <div class="small-box bg-danger">
                                 <div class="inner">
-                                    <h3>65</h3>
+                                    <h3>{{ $totalWrongAnswers }}</h3>
 
                                     <p>Jawaban salah</p>
                                 </div>
                                 <div class="icon">
-                                    <i class="ion ion-pie-graph"></i>
+                                    <i class="mdi mdi-emoticon-neutral"></i>
                                 </div>
                             </div>
                         </div>
@@ -156,62 +89,9 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- ./col -->
                     </div>
-                    {{-- <div class="row">
-                        <div class="col-md-3">
-                            <table class="table table-striped table-bordered text-center">
-                                <thead>
-                                    <tr>
-                                        <th>Total Percobaan Pengerjaan</th>
-                                    </tr>
-                                    <tr>
-                                        <th>NIM</th>
-                                    </tr>
-                                </thead>
-                            </table>
-                        </div>
-                        <div class="col-md-3">
-                            <table class="table table-striped table-bordered text-center">
-                                <thead>
-                                    <tr>
-                                        <th>Nama</th>
-                                    </tr>
-                                    <tr>
-                                        <th>NIM</th>
-                                    </tr>
-                                </thead>
-                            </table>
-                        </div>
-                        <div class="col-md-3">
-                            <table class="table table-striped table-bordered text-center">
-                                <thead>
-                                    <tr>
-                                        <th>Nama</th>
-                                    </tr>
-                                    <tr>
-                                        <th>NIM</th>
-                                    </tr>
-                                </thead>
-                            </table>
-                        </div>
-                        <div class="col-md-3">
-                            <table class="table table-striped table-bordered text-center">
-                                <thead>
-                                    <tr>
-                                        <th>Nama</th>
-                                    </tr>
-                                    <tr>
-                                        <th>NIM</th>
-                                    </tr>
-                                </thead>
-                            </table>
-                        </div>
-                    </div> --}}
-
-
-
-                    <table id="datatable-buttons" class="table table-striped table-bordered w-100">
+                    <br>
+                    <table id="datatable-buttons" class="table table-striped table-bordered w-100 text-center">
                         <thead>
                             <tr>
                                 <th>Category</th>
@@ -222,27 +102,27 @@
                             </tr>
                         </thead>
 
-                        {{-- <tbody>
-                            @foreach ($logs as $log)
-                                <tr>
-                                    <td>{{ $log->user->name }}</td>
-                                    <td>{{ $log->user->nim }}</td>
-                                    <td>
-                                        <a href="#" class="btn btn-info btn-sm btn-edit">
-                                            <i class="mdi mdi-eye"></i> see
-                                        </a>
-                                        <form action="#" method="POST" style="display:inline;">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm btn-delete"
-                                                onclick="return confirm('Are you sure you want to delete this user?')">
-                                                <i class="mdi mdi-delete"></i> Delete
-                                            </button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody> --}}
+                        @foreach ($attempts as $attempt)
+                            <tr>
+                                <td>{{ $category->name }}</td>
+                                <td>{{ $attempt->question ? $attempt->question->question : '' }}</td>
+                                <td>{{ $attempt->confidence }}</td>
+                                <td>{{ $attempt->nilai }}</td>
+                                <td>
+                                    <a href="#" class="btn btn-info btn-sm btn-edit">
+                                        <i class="mdi mdi-eye"></i> see
+                                    </a>
+                                    <form action="#" method="POST" style="display:inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger btn-sm btn-delete"
+                                            onclick="return confirm('Are you sure you want to delete this user?')">
+                                            <i class="mdi mdi-delete"></i> Delete
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @endforeach
                     </table>
                 </div>
             </div>
@@ -269,4 +149,7 @@
 
     <!-- Datatable init js -->
     <script src="{{ asset('assets_backend/pages/datatables.init.js') }}"></script>
+@endpush
+@push('custom-css')
+    <link href="{{ asset('assets_backend/css/emot.css') }}" rel="stylesheet">
 @endpush

@@ -1,7 +1,7 @@
-@extends('layouts.backend', ['title' => 'Log Activity-Category Result'])
+@extends('layouts.backend', ['title' => 'History Confidence Tag-Category Result'])
 
 @section('breadcrumb')
-    <li class="breadcrumb-item active"><a href="">Category Result</a></li>
+    <li class="breadcrumb-item active"><a href="">History Confidence Tag-Category Result</a></li>
 @endsection
 @section('content-backend')
     <div class="row">
@@ -36,7 +36,11 @@
                         <thead>
                             <tr>
                                 <th>Category</th>
-                                <th>Poin</th>
+                                <th>Poin Total</th>
+                                <th>Yakin + Benar</th>
+                                <th>Yakin + Salah</th>
+                                <th>Tidak Yakin + Benar</th>
+                                <th>Tidak Yakin + Salah</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -45,6 +49,10 @@
                             @foreach ($user->categories as $category)
                                 <tr>
                                     <td>{{ $category->name }}</td>
+                                    <td>{{ $category->nilai }}</td>
+                                    <td>{{ $category->nilai }}</td>
+                                    <td>{{ $category->nilai }}</td>
+                                    <td>{{ $category->nilai }}</td>
                                     <td>{{ $category->nilai }}</td>
                                     <td>
                                         <a href="{{ route('log.last.result', ['user' => $user->id, 'categoryId' => $category->id]) }}"

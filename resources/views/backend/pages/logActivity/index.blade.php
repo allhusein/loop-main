@@ -17,7 +17,7 @@
                             </li>
                         @endhasrole
                     </ul>
-                    <table id="datatable-buttons" class="table table-striped table-bordered w-100">
+                    <table id="datatable-buttons" class="table table-striped table-bordered w-100 text-center">
                         <thead>
                             <tr>
                                 <th>Name</th>

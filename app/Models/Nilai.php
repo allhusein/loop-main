@@ -32,4 +32,8 @@ class Nilai extends Model
     {
         return $this->belongsTo(Category::class);
     }
+    public function attempt()
+    {
+        return $this->belongsTo(Attempt::class);
+    }
 }

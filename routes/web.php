@@ -43,8 +43,12 @@ Route::prefix('loop')->middleware('auth')->group(function () {
     Route::post('/exercise/check', 'App\Http\Controllers\ExerciseController@exerciseCheck')->name('exercise.check');
     Route::post('/exercise/result', 'App\Http\Controllers\ExerciseController@calculateScore')->name('exercise.result');
     Route::post('/exercise/result', 'App\Http\Controllers\ExerciseController@show')->name('exercise.hasil');
-    Route::resource('/log-activity', 'App\Http\Controllers\LogController');
-    // Route::resource('/log-category-result', 'App\Http\Controllers\CategoryResultController');
-    Route::get('/log-activity-category-result/{user}', 'App\Http\Controllers\CategoryResultController@index')->name('log.category.result');
-    Route::resource('/log-activity-last-result', 'App\Http\Controllers\LastLogResultController');
+    Route::resource('/log', 'App\Http\Controllers\LogController');
+    Route::resource('/confidence', 'App\Http\Controllers\ConfidenceController');
+    Route::get('/confidence/{user}', 'App\Http\Controllers\ConfidenceController@show')->name('confidence.category.result');
+
+    Route::get('/log-category-result/{user}', 'App\Http\Controllers\CategoryResultController@index')->name('log.category.result');
+
+    Route::get('/log-activity-last-result/{user}/{categoryId}', 'App\Http\Controllers\LastLogResultController@index')->name('log.last.result');
+    Route::get('/log-activity-last-result/{user}/{categoryId}/{questionId}', 'App\Http\Controllers\LastLogResultController@index')->name('log.last.resulti');
 });

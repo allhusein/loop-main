@@ -51,7 +51,7 @@
                          </i></span></a>
                          <ul class="list-unstyled">
                              <li><a href="{{ route('log.index') }}">Log Aktivitas</a></li>
-                             <li><a href="{{ route('category.index') }}">History Confidence Tag</a></li>
+                             <li><a href="{{ route('confidence.index') }}">History Confidence Tag</a></li>
                          </ul>
                      </li>
                  @endhasrole

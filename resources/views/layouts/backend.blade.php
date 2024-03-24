@@ -15,6 +15,7 @@
     @include('backend.include.style')
 
     @stack('after-style')
+    @stack('custom-css')
 
 </head>
 
@@ -62,14 +63,14 @@
     </div>
 
     @include('backend.include.script')
-    @include('sweetalert::alert', ['cdn' => "https://cdn.jsdelivr.net/npm/sweetalert2@9"])
+    @include('sweetalert::alert', ['cdn' => 'https://cdn.jsdelivr.net/npm/sweetalert2@9'])
     @stack('after-script')
 </body>
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-    $('.need-alert').on('click', function (event) {
-      event.preventDefault();
+    $('.need-alert').on('click', function(event) {
+        event.preventDefault();
         Swal.fire({
             title: 'Apakah anda yakin?',
             text: "Data yang sudah dihapus tidak dapat dikembalikan!",
@@ -78,13 +79,12 @@
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
             confirmButtonText: 'Yes'
-    }).then((result) => {
-    if (result.isConfirmed) {
-    $(".need-alert").submit();
-    }
-})
-})
-
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $(".need-alert").submit();
+            }
+        })
+    })
 </script>
 
 </html>

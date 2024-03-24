@@ -140,6 +140,8 @@ class ExerciseController extends Controller
         // Regardless of the answer, record the attempt
         $attempt = $exercise->attempts()->create([
             'user_id' => auth()->user()->id,
+            'question_id' => $exercise->question_id,
+            'category_id' => $exercise->category_id,
             'is_correct' => $totalAnswer == $totalTrue,
             'confidence' => $request->input('confidence'), // Save the student's confidence level
             'started_at' => $startedAt = Carbon::parse($request->input('started_at')), // this will be the start time
