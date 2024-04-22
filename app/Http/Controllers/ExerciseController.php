@@ -137,16 +137,33 @@ class ExerciseController extends Controller
             alert::warning('Coba Lagi Ya !', 'Jawabanmu masih ada yang salah nih');
         }
 
-        // Regardless of the answer, record the attempt
+
+        // Get the start time from the session
+        $attempted_at = session('start_time');
+
+        // Check if the start time is null
+        if ($attempted_at === null) {
+            // If the start time is null, set it to the current time
+            $attempted_at = now();
+        }
+
+        // Get the current time as the finish time
+        $finished_at = now();
+
+        // Now use $attempted_at and $finished_at when creating the model
         $attempt = $exercise->attempts()->create([
             'user_id' => auth()->user()->id,
             'question_id' => $exercise->question_id,
             'category_id' => $exercise->category_id,
             'is_correct' => $totalAnswer == $totalTrue,
             'confidence' => $request->input('confidence'), // Save the student's confidence level
-            'started_at' => $startedAt = Carbon::parse($request->input('started_at')), // this will be the start time
-            'finished_at' => $startedAt->copy()->addSeconds($request->input('duration')), // this will be the end time
+            'attempted_at' => $attempted_at, // Use the attempted_at time
+            'finished_at' => $finished_at, // Set finished_at to the current time
         ]);
+
+        // Now you can calculate the time difference
+        $time_difference = $finished_at->diffInSeconds($attempted_at);
+
 
         // Create a new entry in the nilais table
         Nilai::create([
@@ -169,7 +186,9 @@ class ExerciseController extends Controller
             $e->update(['is_true' => 0]);
         };
 
-        alert::success('Semangat', 'Silahkan jawab ulang latihan ini');
+        // Hapus baris ini
+        // alert::success('Semangat', 'Silahkan jawab ulang latihan ini');
+
         return redirect()->back();
     }
 

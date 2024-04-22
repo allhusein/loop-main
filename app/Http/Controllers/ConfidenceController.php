@@ -49,7 +49,7 @@ class ConfidenceController extends Controller
                 ->count();
 
             $category->tidak_yakin_benar = $attempts->where('confidence', '!=', 'yakin')
-                ->where('is_correct', 1)
+                ->where('is_correct', 0)
                 ->count();
 
             $category->tidak_yakin_salah = $attempts->where('confidence', '!=', 'yakin')

@@ -35,4 +35,5 @@ class Attempt extends Model
     {
         return $this->belongsTo(Nilai::class);
     }
+    public $timestamps = false;
 }

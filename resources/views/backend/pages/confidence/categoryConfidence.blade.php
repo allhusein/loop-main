@@ -37,6 +37,7 @@
                             <tr>
                                 <th>Category</th>
                                 <th>Poin Total</th>
+                                <th>Total Waktu</th>
                                 <th class="custom-width">Yakin + Benar</th>
                                 <th class="custom-width">Yakin + Salah</th>
                                 <th class="custom-width">Tidak Yakin + Benar</th>
@@ -50,6 +51,7 @@
                                 <tr>
                                     <td>{{ $category->name }}</td>
                                     <td>{{ $category->nilai }}</td>
+                                    <td></td>
                                     <td>{{ $category->yakin_benar }}</td>
                                     <td>{{ $category->yakin_salah }}</td>
                                     <td>{{ $category->tidak_yakin_benar }}</td>

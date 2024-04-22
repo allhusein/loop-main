@@ -26,8 +26,13 @@
                                 <p><b>Petunjuk Pengerjaan !</b></p>
                                 <i class="mdi mdi-information"></i>
                                 {{ $category->instruction }}
+                                <!-- Tambahkan kotak waktu di sini -->
+                                <div class="float-right">
+                                    <p id="countdown"></p>
+                                </div>
                             </div>
                         </div>
+
                         <div class="row my-5 text-center">
                             <div class="col-md-12 h5">
                                 <p><b>Kategori : {{ $category->name }}</b></p>
@@ -221,17 +226,53 @@
 
             // Calculate the duration in seconds
             var duration = (endTime - startTime) / 1000;
-
-            // Store the duration in the hidden input field
             document.getElementById('duration').value = duration;
-
-            // Step 3 & 4: Set the value of the hidden input field
             $('#timeSpent').val(timeSpent);
-
-            // rest of your code...
         });
     </script>
 
+    <script>
+        $(document).ready(function() {
+            // Cek apakah waktu mulai sudah ada di localStorage
+            var startTime = localStorage.getItem('startTime');
+
+            // Jika tidak, set waktu mulai ke sekarang dan simpan di localStorage
+            if (!startTime) {
+                startTime = Date.now();
+                localStorage.setItem('startTime', startTime);
+            } else {
+                // Jika ada, ubah kembali ke integer
+                startTime = parseInt(startTime);
+            }
+
+            // Set the duration for the entire category
+            var duration = 1 * 60 * 1000; // 10 minutes in milliseconds
+
+            // Calculate the remaining time
+            var remainingTime = duration - (Date.now() - startTime);
+
+            // Start the countdown
+            countdown = setInterval(function() {
+                // Calculate the minutes and seconds from remainingTime
+                var minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
+                var seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
+
+                // Display the result in the element with id="countdown"
+                document.getElementById('countdown').innerHTML = minutes + "m " + seconds + "s ";
+
+                // If the count down is finished, write some text
+                if (remainingTime < 0) {
+                    clearInterval(countdown);
+                    // Hapus waktu mulai dari localStorage
+                    localStorage.removeItem('startTime');
+                    // Redirect to the desired page
+                    window.location.href = "{{ route('exercise.reset.all') . '?id=' . $category->id }}";
+                }
+
+                remainingTime -= 1000;
+            }, 1000);
+        });
+    </script>
     <style>
         .btn-custom {
             width: 130px;

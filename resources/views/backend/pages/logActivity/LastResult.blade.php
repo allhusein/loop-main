@@ -98,6 +98,7 @@
                                 <th>Question</th>
                                 <th>Confidence Tag</th>
                                 <th>Result</th>
+                                <th>Timer</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -108,6 +109,8 @@
                                 <td>{{ $attempt->question ? $attempt->question->question : '' }}</td>
                                 <td>{{ $attempt->confidence }}</td>
                                 <td>{{ $attempt->nilai }}</td>
+                                <td></td>
+
                                 <td>
                                     <a href="#" class="btn btn-info btn-sm btn-edit">
                                         <i class="mdi mdi-eye"></i> see
