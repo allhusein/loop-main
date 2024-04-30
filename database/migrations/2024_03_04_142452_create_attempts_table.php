@@ -13,17 +13,19 @@ class CreateAttemptsTable extends Migration
      */
     public function up()
     {
+
         Schema::create('attempts', function (Blueprint $table) {
             $table->id();
             $table->foreignId('exercise_id')->constrained()->onDelete('cascade');
             $table->foreignId('category_id')->constrained()->onDelete('cascade');
             $table->foreignId('question_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->timestamp('attempted_at');
+            $table->timestamp('attempted_at')->nullable();
             $table->boolean('is_correct');
             $table->string('confidence');
-            $table->timestamp('started_at')->nullable(); // Allow NULL values
-            $table->timestamp('finished_at')->nullable(); // Allow NULL values/ New column for when the student finished answering
+            $table->timestamp('started_at')->nullable();
+            $table->timestamp('finished_at')->nullable();
+            $table->integer('duration');
             $table->timestamps();
         });
     }

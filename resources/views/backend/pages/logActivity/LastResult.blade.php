@@ -80,7 +80,7 @@
                             <!-- small box -->
                             <div class="small-box bg-warning">
                                 <div class="inner">
-                                    <h3>44</h3>
+                                    <h3>{{ $total_time }} Menit</h3>
 
                                     <p>Total Waktu</p>
                                 </div>
@@ -109,7 +109,8 @@
                                 <td>{{ $attempt->question ? $attempt->question->question : '' }}</td>
                                 <td>{{ $attempt->confidence }}</td>
                                 <td>{{ $attempt->nilai }}</td>
-                                <td></td>
+                                <td>{{ $attempt->duration }} Menit</td>
+
 
                                 <td>
                                     <a href="#" class="btn btn-info btn-sm btn-edit">

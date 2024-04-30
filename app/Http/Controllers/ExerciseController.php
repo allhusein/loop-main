@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Cookie;
 use RealRashid\SweetAlert\Facades\Alert;
 use Carbon\Carbon;
 use App\Models\Nilai;
+use App\Models\Timer;
 
 class ExerciseController extends Controller
 {
@@ -26,6 +27,29 @@ class ExerciseController extends Controller
         $category_id = $_GET['id'];
         $category = Category::with('question')->findOrFail($category_id);
         $question_id = null;
+
+        //ambil time_limit dari tabel categories
+        $time_limit = Category::where('id', $category_id)->first()->time_limit;
+
+        $duration = $time_limit * 60 * 1000; // Konversi menit ke milidetik
+
+        $timeExpired = false;
+        // Cek apakah startTime ada di localStorage
+        $startTime = session('startTime');
+
+        if ($startTime !== null) {
+            // Ubah startTime menjadi integer
+            $startTime = (int) $startTime;
+
+            // Hitung waktu tersisa
+            $remainingTime = $duration - (time() - $startTime);
+
+            // Jika waktu sudah habis
+            if ($remainingTime <= 0) {
+                $question = null;
+                $timeExpired = true;
+            }
+        }
 
         foreach ($category->question as $q) {
             $exercise = Exercise::where('question_id', $q->id)->where('user_id', $id_user)->first();
@@ -53,6 +77,8 @@ class ExerciseController extends Controller
             'question' => $question,
             'category' => $category,
             'nilai' => $nilai,
+            'duration' => $duration,
+            'timeExpired' => $timeExpired,
         ]);
     }
     public function preview()
@@ -113,6 +139,9 @@ class ExerciseController extends Controller
         return redirect()->route('preview', ['id' => $exercise->category_id]);
     }
 
+
+
+
     public function exerciseCheck(Request $request)
     {
         //variabel total true ada berapa vs total istrue
@@ -137,7 +166,6 @@ class ExerciseController extends Controller
             alert::warning('Coba Lagi Ya !', 'Jawabanmu masih ada yang salah nih');
         }
 
-
         // Get the start time from the session
         $attempted_at = session('start_time');
 
@@ -150,6 +178,16 @@ class ExerciseController extends Controller
         // Get the current time as the finish time
         $finished_at = now();
 
+        // Now you can calculate the time difference
+        $remainingTime = $finished_at->diffInSeconds($attempted_at);
+        //jika totalDuration null
+        if ($request->input('totalDuration') == null) {
+            $remainingTime = 0.2 + $remainingTime;
+        } else {
+            $remainingTime = $request->input('remainingTime');
+        }
+
+
         // Now use $attempted_at and $finished_at when creating the model
         $attempt = $exercise->attempts()->create([
             'user_id' => auth()->user()->id,
@@ -158,12 +196,30 @@ class ExerciseController extends Controller
             'is_correct' => $totalAnswer == $totalTrue,
             'confidence' => $request->input('confidence'), // Save the student's confidence level
             'attempted_at' => $attempted_at, // Use the attempted_at time
+            'started_at' => $attempted_at, // Set started_at to the current time
             'finished_at' => $finished_at, // Set finished_at to the current time
+            'duration' => $remainingTime, // Save the time difference
+
         ]);
 
         // Now you can calculate the time difference
         $time_difference = $finished_at->diffInSeconds($attempted_at);
+        //jika totalDuration null
+        if ($request->input('totalDuration') == null) {
+            $totalDuration = 10 + $time_difference;
+        } else {
+            $totalDuration = $request->input('totalDuration');
+        }
 
+
+
+
+        // Simpan data waktu yang dihabiskan ke dalam tabel timers
+        $timer = new Timer();
+        $timer->user_id = auth()->user()->id;
+        $timer->question_id = $exercise->question_id;
+        $timer->waktu = $totalDuration;
+        $timer->save();
 
         // Create a new entry in the nilais table
         Nilai::create([
@@ -176,7 +232,26 @@ class ExerciseController extends Controller
         return redirect()->back();
     }
 
+
     public function exerciseReset()
+    {
+
+        $id_user = auth()->user()->id;
+
+        $exercise = Exercise::where('user_id', $id_user)->where('category_id', $_GET['id'])->get();
+
+        foreach ($exercise as $e) {
+            $e->update(['is_true' => 1]);
+        };
+
+        // Hapus baris ini
+        // alert::success('Semangat', 'Silahkan jawab ulang latihan ini');
+
+        return redirect()->back();
+    }
+
+    //exerciseRecovery untuk exercise
+    public function exerciseRecovery()
     {
         $id_user = auth()->user()->id;
 
@@ -191,6 +266,9 @@ class ExerciseController extends Controller
 
         return redirect()->back();
     }
+
+
+
 
     // public function calculateScore(Request $request)
     // {

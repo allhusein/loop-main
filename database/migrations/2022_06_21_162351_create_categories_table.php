@@ -19,6 +19,7 @@ class CreateCategoriesTable extends Migration
             $table->string('instruction');
             $table->string('img')->nullable();
             $table->string('bts_nilai')->nullable();
+            $table->integer('time_limit')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

@@ -23,12 +23,11 @@
                     <div class="card-body">
                         <div class="row px-5">
                             <div class="col-md-12 border-top border-bottom h5 py-3">
-                                <p><b>Petunjuk Pengerjaan !</b></p>
+                                <p><b>Petunjuk Pengerjaan !!</b></p>
                                 <i class="mdi mdi-information"></i>
                                 {{ $category->instruction }}
-                                <!-- Tambahkan kotak waktu di sini -->
                                 <div class="float-right">
-                                    <p id="countdown"></p>
+                                    <p id="countdown"></p> <!-- untuk timer -->
                                 </div>
                             </div>
                         </div>
@@ -129,7 +128,7 @@
                         <h1 class="display-4">Selamat semua soal latihan sudah terjawab dengan benar</h1>
                         <h3 class="display-4">Nilai Anda: {{ $nilai ?? 0 }} </h3>
                         <p class="lead">Silahkan pilih kategori latihan lainya yang belum diselesaikan.</p>
-                        <a href="{{ route('exercise.reset.all') . '?id=' . $category->id }}}}">
+                        <a href="{{ route('exercise.recovery') . '?id=' . $category->id }}">
                             <p class="lead text-primary">Kerjakan Ulang</p>
                         </a>
                     </div>
@@ -212,6 +211,7 @@
             })
         })
     </script>
+
     <script>
         // Step 1: Record the start time
         var startTime = new Date();
@@ -228,9 +228,12 @@
             var duration = (endTime - startTime) / 1000;
             document.getElementById('duration').value = duration;
             $('#timeSpent').val(timeSpent);
+
         });
     </script>
 
+
+    //js untuk timer
     <script>
         $(document).ready(function() {
             // Cek apakah waktu mulai sudah ada di localStorage
@@ -246,10 +249,15 @@
             }
 
             // Set the duration for the entire category
-            var duration = 1 * 60 * 1000; // 10 minutes in milliseconds
+            var duration = <?php echo $duration; ?>; // Nilai time_limit dari database dalam milidetik
+
+
+            //total jumlah time yg diperlukan untuk menjawab semua soal
+            var totalDuration = duration;
 
             // Calculate the remaining time
             var remainingTime = duration - (Date.now() - startTime);
+
 
             // Start the countdown
             countdown = setInterval(function() {
@@ -265,14 +273,47 @@
                     clearInterval(countdown);
                     // Hapus waktu mulai dari localStorage
                     localStorage.removeItem('startTime');
-                    // Redirect to the desired page
+
+                    // Tampilkan pesan bahwa waktu habis
+                    document.getElementById('countdown').innerHTML = "Waktu Habis";
+
                     window.location.href = "{{ route('exercise.reset.all') . '?id=' . $category->id }}";
                 }
 
+                totalDuration -= remainingTime;
+
                 remainingTime -= 1000;
             }, 1000);
+            if (remainingTime < 0) {
+                clearInterval(countdown);
+                // Hapus waktu mulai dari localStorage
+                localStorage.removeItem('startTime');
+                // Tampilkan pesan bahwa waktu habis
+                document.getElementById('countdown').innerHTML = "Waktu Habis";
+
+                // Kirim nilai totalDuration ke server menggunakan AJAX
+                $.ajax({
+                    url: "{{ route('exercise.check') }}",
+                    type: "POST",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        totalDuration: totalDuration
+                    },
+                    success: function(response) {
+                        // Lakukan tindakan yang diperlukan setelah nilai totalDuration berhasil dikirim
+                        window.location.href =
+                            "{{ route('exercise.reset.all') . '?id=' . $category->id }}";
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+            }
+
         });
     </script>
+
+
     <style>
         .btn-custom {
             width: 130px;
