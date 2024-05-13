@@ -20,7 +20,7 @@ class CategoryController extends Controller
     public function index()
     {
         $categories = Category::all();
-        return view('backend.pages.category.index',compact('categories'));
+        return view('backend.pages.category.index', compact('categories'));
     }
 
     /**
@@ -68,8 +68,7 @@ class CategoryController extends Controller
     {
         $cat = Category::find($id);
 
-        return view('backend.pages.category.edit',compact('cat'));
-
+        return view('backend.pages.category.edit', compact('cat'));
     }
 
     /**
@@ -94,7 +93,7 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request,$id)
+    public function destroy(Request $request, $id)
     {
         //
         $cat = Category::find($id);

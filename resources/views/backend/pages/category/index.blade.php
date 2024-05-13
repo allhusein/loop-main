@@ -30,7 +30,6 @@
                         <div class="col">
                             <div class="row justify-content-center">
                                 @hasrole('superadmin|dosen')
-
                                 <form action="{{route('question.index').'?id='.$cat->id}}" method="get">
                                     <input type="hidden" name="id" value="{{ $cat->id }}">
                                     <button type="submit" class="">
@@ -44,7 +43,7 @@
                                         <i class="mdi mdi-eye"></i>
                                     </button>
                                 </form>
-                                <form action="{{route('category.destroy',$cat->id)}}" method="post" class="need-alert">
+                                <form action="{{route('category.destroy', $cat->id)}}" method="post" class="need-alert">
                                     @csrf
                                     @method('delete')
                                     <button type="submit" class="" >
@@ -54,17 +53,15 @@
 
                                 @endhasrole
                                 @hasrole('mahasiswa')
-                                <a href="{{route('exercise.index').'?id='.$cat->id}}">
-
+                                <a href="{{ route('exercise.index').'?id='.$cat->id }}">
                                     <form action="{{route('exercise.index').'?id='.$cat->id}}" method="get">
-
                                         <input type="hidden" name="id" value="{{ $cat->id }}">
                                         <button type="submit" class="">
                                             <i class="mdi mdi-eye"></i>
                                         </button>
                                     </form>
-                                    @endhasrole
-
+                                </a>
+                                @endhasrole
                             </div>
                         </div>
                         {{-- <div class="col-sm">col-sm</div>

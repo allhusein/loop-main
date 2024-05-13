@@ -26,6 +26,12 @@
                                 <p><b>Petunjuk Pengerjaan !!</b></p>
                                 <i class="mdi mdi-information"></i>
                                 {{ $category->instruction }}
+<<<<<<< Updated upstream
+=======
+                                <!-- Tambahkan kotak waktu di sini -->
+
+
+>>>>>>> Stashed changes
                                 <div class="float-right">
                                     <p id="countdown"></p> <!-- untuk timer -->
                                 </div>
@@ -43,7 +49,7 @@
                                     <div class="card w-100 border">
                                         <div class="card-body">
                                             <div class="border shadow px-4 py-2 d-inline border-dark bg-danger">Soal</div>
-                                            <div class="mx-4 mt-4 mb-5">{{ $question->question->question }}</div>
+                                            <div class="mx-4 mt-4 mb-5">{!! $question->question->question !!}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -55,14 +61,18 @@
                                             <div class="mx-4 mt-4 mb-5 mt-5">
                                                 <div class="row text-center">
                                                     @php $forjsb=[]; @endphp
-                                                    <form action="{{ route('exercise.check') }}" method="post"
-                                                        class="mx-auto">
+                                                    <form action="{{ route('exercise.check') }}" id="exercise-check"
+                                                        method="post" class="mx-auto">
                                                         @csrf
                                                         <input type="hidden" name="exercise_id"
                                                             value="{{ $question->id }}">
                                                         <input type="hidden" name="confidence" id="confidence">
-                                                        <input type="hidden" name="started_at" id="startTime">
+                                                        <input type="hidden" name="started_at" id="startTime"
+                                                            value="{{ \Carbon\Carbon::now() }}">
                                                         <input type="hidden" name="finished_at" id="endTime">
+                                                        @php
+                                                            // dd($question->question->answer);
+                                                        @endphp
                                                         @foreach ($question->question->answers as $a)
                                                             @php array_push($forjsb,$a->id) @endphp
                                                             @if ($a->is_true)
@@ -126,7 +136,7 @@
                 <div class="jumbotron jumbotron-fluid">
                     <div class="container text-center">
                         <h1 class="display-4">Selamat semua soal latihan sudah terjawab dengan benar</h1>
-                        <h3 class="display-4">Nilai Anda: {{ $nilai ?? 0 }} </h3>
+                        <h3 class="display-4">Total Nilai Anda: {{ $nilai ?? 0 }} </h3>
                         <p class="lead">Silahkan pilih kategori latihan lainya yang belum diselesaikan.</p>
                         <a href="{{ route('exercise.recovery') . '?id=' . $category->id }}">
                             <p class="lead text-primary">Kerjakan Ulang</p>
@@ -238,6 +248,8 @@
         $(document).ready(function() {
             // Cek apakah waktu mulai sudah ada di localStorage
             var startTime = localStorage.getItem('startTime');
+            // var startTime = Date.now();
+
 
             // Jika tidak, set waktu mulai ke sekarang dan simpan di localStorage
             if (!startTime) {
@@ -283,7 +295,30 @@
                 totalDuration -= remainingTime;
 
                 remainingTime -= 1000;
+
+                if (remainingTime < 0) {
+                    localStorage.removeItem('startTime');
+                    document.getElementById('countdown').innerHTML = "Waktu Habis";
+
+                    $.ajax({
+                        url: "{{ route('exercise.check') }}",
+                        type: "POST",
+                        data: {
+                            _token: "{{ csrf_token() }}",
+                            totalDuration: totalDuration
+                        },
+                        success: function(response) {
+                            // Lakukan tindakan yang diperlukan setelah nilai totalDuration berhasil dikirim
+                            window.location.href =
+                                "{{ route('exercise.reset.all') . '?id=' . $category->id }}";
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(error);
+                        }
+                    });
+                }
             }, 1000);
+<<<<<<< Updated upstream
             if (remainingTime < 0) {
                 clearInterval(countdown);
                 // Hapus waktu mulai dari localStorage
@@ -309,6 +344,33 @@
                     }
                 });
             }
+=======
+            // if (remainingTime < 0) {
+            //     clearInterval(countdown);
+            //     // Hapus waktu mulai dari localStorage
+            //     localStorage.removeItem('startTime');
+            //     // Tampilkan pesan bahwa waktu habis
+            //     document.getElementById('countdown').innerHTML = "Waktu Habis";
+
+            //     // Kirim nilai totalDuration ke server menggunakan AJAX
+            //     $.ajax({
+            //         url: "{{ route('exercise.check') }}",
+            //         type: "POST",
+            //         data: {
+            //             _token: "{{ csrf_token() }}",
+            //             totalDuration: totalDuration
+            //         },
+            //         success: function(response) {
+            //             // Lakukan tindakan yang diperlukan setelah nilai totalDuration berhasil dikirim
+            //             window.location.href =
+            //                 "{{ route('exercise.reset.all') . '?id=' . $category->id }}";
+            //         },
+            //         error: function(xhr, status, error) {
+            //             console.error(error);
+            //         }
+            //     });
+            // }
+>>>>>>> Stashed changes
 
         });
     </script>
