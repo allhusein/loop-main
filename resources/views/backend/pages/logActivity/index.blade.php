@@ -22,6 +22,7 @@
                             <tr>
                                 <th>Name</th>
                                 <th>NIM</th>
+                                <th>Kelas</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -31,6 +32,8 @@
                                 <tr>
                                     <td>{{ $log->user->name }}</td>
                                     <td>{{ $log->user->nim }}</td>
+                                    <td>{{ $log->user->kelas }}</td>
+
                                     <td>
                                         <a href="{{ route('log.category.result', ['user' => $log->user->id]) }}"
                                             class="btn btn-info btn-sm btn-edit">

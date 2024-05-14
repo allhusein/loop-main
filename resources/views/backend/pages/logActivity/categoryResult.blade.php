@@ -20,6 +20,10 @@
                                         <th>NIM</th>
                                         <td>{{ $user->nim }}</td>
                                     </tr>
+                                    <tr>
+                                        <th>Kelas</th>
+                                        <td>{{ $user->kelas }}</td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -51,14 +55,14 @@
                                             class="btn btn-info btn-sm btn-edit">
                                             <i class="mdi mdi-eye"></i> see
                                         </a>
-                                        <form action="#" method="POST" style="display:inline;">
+                                        {{-- <form action="#" method="POST" style="display:inline;">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-danger btn-sm btn-delete"
                                                 onclick="return confirm('Are you sure you want to delete this user?')">
                                                 <i class="mdi mdi-delete"></i> Delete
                                             </button>
-                                        </form>
+                                        </form> --}}
                                     </td>
                                 </tr>
                             @endforeach

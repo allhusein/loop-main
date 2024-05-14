@@ -22,10 +22,10 @@ class QuestionController extends Controller
     public function index()
     {
         // ambil data category dengan relation
-        $category = Category::with(['question'=>function($q){
+        $category = Category::with(['question' => function ($q) {
             $q->with('answers');
         }])->findOrFail($_GET['id']);
-        return view('backend.pages.question.index',compact('category'));
+        return view('backend.pages.question.index', compact('category'));
     }
 
     /**
@@ -55,14 +55,13 @@ class QuestionController extends Controller
             $question = Question::find($request->input('qid'));
             $question->update($data_question);
 
-            foreach($request->input('answer') as $key => $ans)
-            {
-                $answerUpdate = Answer::where('question_id', $request->input('qid'))->where('id',$key)->first();
+            foreach ($request->input('answer') as $key => $ans) {
+                $answerUpdate = Answer::where('question_id', $request->input('qid'))->where('id', $key)->first();
                 if ($answerUpdate) {
                     $answerUpdate->update([
                         'answer' => $ans
                     ]);
-                }else{
+                } else {
                     $answerSave = Answer::insert([
                         'answer' => $ans,
                         'question_id' => $request->input('qid'),
@@ -77,14 +76,13 @@ class QuestionController extends Controller
             //     'answer' => $truAnswer->answer
             // ]);
 
-        }else{
+        } else {
             $data_question = [
                 'question' => $request->input('question'),
                 'category_id' => $request->input('id')
             ];
             $question = Question::insertGetId($data_question);
-            foreach($request->input('answer') as $ans)
-            {
+            foreach ($request->input('answer') as $ans) {
                 $answer = Answer::insert([
                     'answer' => $ans,
                     'question_id' => $question,
@@ -93,11 +91,7 @@ class QuestionController extends Controller
             }
         }
         toast('Qestion has been updated', 'success');
-                return redirect()->back();
-        
-
-        
-
+        return redirect()->back();
     }
 
     /**
@@ -166,9 +160,9 @@ class QuestionController extends Controller
         $answer = Answer::find($id);
 
         if ($answer->is_true) {
-            $answer->update(['is_true'=>0]);
-        }else{
-            $answer->update(['is_true'=>1]);
+            $answer->update(['is_true' => 0]);
+        } else {
+            $answer->update(['is_true' => 1]);
         }
         toast('Qestion has been updated', 'success');
         return redirect()->back();

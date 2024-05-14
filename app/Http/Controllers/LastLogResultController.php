@@ -8,6 +8,9 @@ use App\Models\Category;
 use App\Models\Nilai;
 use App\Models\Question;
 use App\Models\User;
+use App\Models\Timer;
+use Carbon\Carbon;
+
 
 
 class LastLogResultController extends Controller
@@ -25,21 +28,23 @@ class LastLogResultController extends Controller
         $questionses = Question::where('category_id', $categoryId)->get();
 
         $attempts = Attempt::where('user_id', $user->id)
+            ->with('nilai')
             ->where('category_id', $categoryId)
             ->get()
             ->map(function ($attempt) {
-                $attempt->nilai = $attempt->is_correct == 1 ? 10 : 0;
+                $attempt->nilai = $attempt->is_correct ? 10 : 0;
                 return $attempt;
             });
-        // ->map(function ($attempt) {
-        //     $attempt->is_true = $attempt->is_true == 1 ? 10 : 0;
-        //     return $attempt;
-        // });
+
+        $jumlah_baris = Attempt::where('user_id', $user->id)
+            ->where('category_id', $categoryId)
+            ->count();
 
         $questions = Question::where('category_id', $categoryId)
             ->get()
             ->map(function ($question) use ($attempts) {
                 $question->attempt = $attempts->firstWhere('question_id', $question->id);
+                $question->attempt->nilai = $question->attempt->is_correct ? 10 : 0;
                 return $question;
             });
 
@@ -47,17 +52,26 @@ class LastLogResultController extends Controller
             ->where('category_id', $categoryId)
             ->count();
 
-        $totalCorrectAnswers = Nilai::where('user_id', $user->id)
+        $totalCorrectAnswers = Attempt::where('user_id', $user->id)
             ->where('category_id', $categoryId)
-            ->where('nilai', 10)
+            ->where('is_correct', 1)
+            ->count();
+        $totalWrongAnswers = Attempt::where('user_id', $user->id)
+            ->where('category_id', $categoryId)
+            ->where('is_correct', 0)
             ->count();
 
-        $totalWrongAnswers = Nilai::where('user_id', $user->id)
-            ->where('category_id', $categoryId)
-            ->where('nilai', 0)
-            ->count();
+        $category = Category::where('id', $categoryId)->first();
 
-        return view('backend.pages.logActivity.LastResult', compact('user', 'category', 'questions', 'attempts', 'totalAttempts', 'totalCorrectAnswers', 'totalWrongAnswers'));
+        $time_limit = $category->time_limit;
+
+        $total_time = $time_limit * $jumlah_baris / 2;
+
+        $total_waktu_pengerjaan = Attempt::where('user_id', $user->id)
+            ->where('category_id', $categoryId)
+            ->sum('duration');
+
+        return view('backend.pages.logActivity.LastResult', compact('user', 'category', 'questions', 'attempts', 'totalAttempts', 'totalCorrectAnswers', 'totalWrongAnswers', 'questionses', 'total_time', 'total_waktu_pengerjaan'));
     }
     /**
      * Show the form for creating a new resource.
@@ -120,8 +134,21 @@ class LastLogResultController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+
+
+
+    public function destroy($user, $category)
     {
-        // Your code here
+        $attempt = Attempt::where('user_id', $user)->where('category_id', $category)->first();
+        if ($attempt) {
+            $nilai = Nilai::where('attemp_id', $attempt->id)->first();
+            if ($nilai) {
+                $nilai->delete();
+            }
+            $attempt->delete();
+            return redirect()->back()->with('success', 'Log result deleted successfully');
+        } else {
+            return redirect()->back()->with('error', 'Log result not found');
+        }
     }
 }

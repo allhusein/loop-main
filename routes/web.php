@@ -37,6 +37,7 @@ Route::prefix('loop')->middleware('auth')->group(function () {
     Route::get('/question/{id}/delete-answer', 'App\Http\Controllers\QuestionController@questionDelete')->name('question.answer.delete');
     Route::get('/question/{id}/check-answer', 'App\Http\Controllers\QuestionController@questionCheck')->name('question.answer.check');
     Route::get('/exercise/reset', 'App\Http\Controllers\ExerciseController@exerciseReset')->name('exercise.reset.all');
+    Route::get('/exercise/recovery', 'App\Http\Controllers\ExerciseController@exerciseRecovery')->name('exercise.recovery');
     Route::resource('/exercise', 'App\Http\Controllers\ExerciseController');
     Route::get('/preview', 'App\Http\Controllers\ExerciseController@preview')->name('preview');
     Route::post('/preview', 'App\Http\Controllers\ExerciseController@exercisePreviewCheck')->name('previewcheck');
@@ -50,6 +51,16 @@ Route::prefix('loop')->middleware('auth')->group(function () {
 
     Route::get('/log-category-result/{user}', 'App\Http\Controllers\CategoryResultController@index')->name('log.category.result');
 
+
     Route::get('/log-activity-last-result/{user}/{categoryId}', 'App\Http\Controllers\LastLogResultController@index')->name('log.last.result');
     Route::get('/log-activity-last-result/{user}/{categoryId}/{questionId}', 'App\Http\Controllers\LastLogResultController@index')->name('log.last.resulti');
+
+
+
+
+    // Route::delete('/confidence/{id}', 'App\Http\Controllers\ConfidenceController@destroy')->name('confidence.destroy');
+
+
+
+    Route::delete('/log-activity-last-result/{user}/{category}', 'App\Http\Controllers\LastLogResultController@destroy')->name('lastlogresult.destroy');
 });

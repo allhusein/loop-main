@@ -22,6 +22,10 @@
                                         <th>NIM</th>
                                         <td>{{ $user->nim }}</td>
                                     </tr>
+                                    <tr>
+                                        <th>Kelas</th>
+                                        <td>{{ $user->kelas }}</td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -80,8 +84,13 @@
                             <!-- small box -->
                             <div class="small-box bg-warning">
                                 <div class="inner">
+<<<<<<< Updated upstream
                                     <h3>{{ $total_time }} Menit</h3>
 
+=======
+                                    <h3>{{ sprintf('%02d:%02d:%02d', floor($total_waktu_pengerjaan / 3600), floor(($total_waktu_pengerjaan % 3600) / 60), $total_waktu_pengerjaan % 60) }}
+                                    </h3>
+>>>>>>> Stashed changes
                                     <p>Total Waktu</p>
                                 </div>
                                 <div class="icon">
@@ -97,8 +106,9 @@
                                 <th>Category</th>
                                 <th>Question</th>
                                 <th>Confidence Tag</th>
-                                <th>Result</th>
                                 <th>Timer</th>
+                                <th>Result</th>
+                                {{-- <th>Log</th> --}}
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -107,11 +117,23 @@
                             <tr>
                                 <td>{{ $category->name }}</td>
                                 <td>{{ $attempt->question ? $attempt->question->question : '' }}</td>
-                                <td>{{ $attempt->confidence }}</td>
+                                <td>{{ $attempt->is_correct ? 'Benar' : 'Salah' }} ({{ $attempt->confidence }})</td>
+                                <td>
+                                    {{ sprintf('%02d:%02d:%02d', floor($attempt->duration / 3600), floor(($attempt->duration % 3600) / 60), $attempt->duration % 60) }}
+                                </td>
                                 <td>{{ $attempt->nilai }}</td>
+<<<<<<< Updated upstream
                                 <td>{{ $attempt->duration }} Menit</td>
 
+=======
+>>>>>>> Stashed changes
 
+                                {{-- <td>
+                                    <ul>
+                                        <li>1. o (salah)</li>
+                                        <li>2. p (salah)</li>
+                                    </ul>
+                                </td> --}}
                                 <td>
                                     <a href="#" class="btn btn-info btn-sm btn-edit">
                                         <i class="mdi mdi-eye"></i> see

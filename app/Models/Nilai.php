@@ -15,6 +15,7 @@ class Nilai extends Model
         'user_id',
         'question_id',
         'category_id',
+        'attemp_id',
         'nilai',
         'deleted_at',
         'created_at',
