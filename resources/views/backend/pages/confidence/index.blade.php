@@ -22,6 +22,7 @@
                             <tr>
                                 <th>Name</th>
                                 <th>NIM</th>
+                                <th>Kelas</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -31,12 +32,14 @@
                                 <tr>
                                     <td>{{ $confidence->user->name }}</td>
                                     <td>{{ $confidence->user->nim }}</td>
+                                    <td>{{ $confidence->user->kelas }}</td>
                                     <td>
                                         <a href="{{ route('confidence.category.result', ['user' => $confidence->user->id]) }}"
                                             class="btn btn-info btn-sm btn-edit">
                                             <i class="mdi mdi-eye"></i> see
                                         </a>
-                                        <form action="#" method="POST" style="display:inline;">
+                                        <form action="{{ route('confidence.destroy', $confidence->id) }}" method="POST"
+                                            style="display:inline;">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-danger btn-sm btn-delete"

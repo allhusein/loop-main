@@ -38,64 +38,97 @@ class ConfidenceController extends Controller
 
             // Calculate the values for the new columns
             $attempts = Attempt::where('user_id', $user->id)
-                ->where('category_id', $category->id);
+                ->where('category_id', $category->id)
+                ->get();
 
-            $category->yakin_benar = $attempts->where('confidence', 'yakin')
+            $category->yakin_benar = $attempts->where('confidence', 'Yakin')
                 ->where('is_correct', 1)
                 ->count();
 
-            $category->yakin_salah = $attempts->where('confidence', 'yakin')
-                ->where('is_correct', '!=', 1)
-                ->count();
-
-            $category->tidak_yakin_benar = $attempts->where('confidence', '!=', 'yakin')
+            $category->yakin_salah = $attempts->where('confidence', 'Yakin')
                 ->where('is_correct', 0)
                 ->count();
 
-            $category->tidak_yakin_salah = $attempts->where('confidence', '!=', 'yakin')
-                ->where('is_correct', '!=', 1)
+            $category->tidak_yakin_benar = $attempts->where('confidence', 'Tidak Yakin')
+                ->where('is_correct', 1)
                 ->count();
 
+            $category->tidak_yakin_salah = $attempts->where('confidence', 'Tidak Yakin')
+                ->where('is_correct', 0)
+                ->count();
+
+            $category->total_waktu = $attempts->sum('duration');
             return $category;
+        })->filter(function ($category) {
+            // Only include the category if it has a value
+            return $category->nilai > 0;
         });
 
         return view('backend.pages.confidence.categoryConfidence', compact('user'));
     }
 
+    function calculateFinalScore($datediff)
+    {
+        $score = 1;
+        if ($datediff <= 60) {
+            $score = 5;
+        } else if ($datediff <= 120) {
+            $score = 4;
+        } else if ($datediff <= 180) {
+            $score = 3;
+        } else if ($datediff <= 240) {
+            $score = 2;
+        }
+        return $score;
+    }
 
     public function PerQuestion($userId, $categoryId)
     {
         $user = User::find($userId);
         $category = Category::find($categoryId);
 
-        $questions = Question::where('category_id', $categoryId)
-            ->with(['attempts' => function ($query) use ($userId) {
-                $query->where('user_id', $userId);
-            }])
-            ->get();
-
-        foreach ($questions as $question) {
-            // Calculate the values for the new columns
-            $attempts = Attempt::where('user_id', $user->id)
-                ->where('question_id', $question->id);
-
-            $question->yakin_benar = $attempts->where('confidence', 'yakin')
-                ->where('is_correct', 1)
-                ->count();
-
-            $question->yakin_salah = $attempts->where('confidence', 'yakin')
-                ->where('is_correct', '!=', 1)
-                ->count();
-
-            $question->tidak_yakin_benar = $attempts->where('confidence', '!=', 'yakin')
-                ->where('is_correct', 1)
-                ->count();
-
-            $question->tidak_yakin_salah = $attempts->where('confidence', '!=', 'yakin')
-                ->where('is_correct', '!=', 1)
-                ->count();
+        $totalScores = [
+            'yakin_benar' => 0,
+            'yakin_salah' => 0,
+            'tidak_yakin_benar' => 0,
+            'tidak_yakin_salah' => 0,
+        ];
+        $attempts = Attempt::where('category_id', $categoryId)->where('user_id', $userId)->get();
+        foreach ($attempts as $attempt) {
+            $attempt->yakin_benar = "-";
+            $attempt->yakin_salah = "-";
+            $attempt->tidak_yakin_benar = "-";
+            $attempt->tidak_yakin_salah = "-";
+            $timer_answer = strtotime($attempt->finished_at) - strtotime($attempt->started_at);
+            $final_score = $this->calculateFinalScore($timer_answer);
+            if ($attempt->confidence == "Yakin" && $attempt->is_correct == 1) {
+                $attempt->yakin_benar = $final_score;
+                $totalScores['yakin_benar'] += $final_score;
+            } else if ($attempt->confidence == "Yakin" && $attempt->is_correct == 0) {
+                $attempt->yakin_salah = $final_score;
+                $totalScores['yakin_salah'] += $final_score;
+            } else if ($attempt->confidence == "Tidak Yakin" && $attempt->is_correct == 1) {
+                $attempt->tidak_yakin_benar = $final_score;
+                $totalScores['tidak_yakin_benar'] += $final_score;
+            } else if ($attempt->confidence == "Tidak Yakin" && $attempt->is_correct == 0) {
+                $attempt->tidak_yakin_salah = $final_score;
+                $totalScores['tidak_yakin_salah'] += $final_score;
+            }
+            $attempt->time_taken = date("H:i:s", $timer_answer);
         }
 
-        return view('backend.pages.confidence.categoryPerQuestion', compact('user', 'category', 'questions'));
+        return view('backend.pages.confidence.categoryPerQuestion', compact('user', 'category', 'attempts', 'totalScores'));
+    }
+
+
+    public function destroy($id)
+    {
+        $attempt = Attempt::find($id);
+        if ($attempt) {
+            $attempt->delete();
+            return redirect()->back()->with('success', 'Attempt deleted successfully');
+        } else {
+            return redirect()->back()->with('error', 'Attempt not found');
+        }
     }
 }

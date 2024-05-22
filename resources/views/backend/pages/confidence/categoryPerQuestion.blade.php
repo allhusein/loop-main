@@ -17,26 +17,48 @@
                             <table class="table table-striped table-bordered">
                                 <tbody>
                                     <tr>
-                                        <th>Nama</th>
+                                        <th>Name</th>
                                         <td>{{ $user->name }}</td>
                                     </tr>
                                     <tr>
                                         <th>NIM</th>
                                         <td>{{ $user->nim }}</td>
                                     </tr>
+                                    <tr>
+                                        <th>Lihat Hasil</th>
+                                        <td>
+                                            <button type="button" class="btn btn-primary btn-sm" data-toggle="modal"
+                                                data-target="#chartModal">Lihat Hasil</button>
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
+                        </div>
+                        <!-- Move the chart into a modal -->
+                        <div class="modal fade" id="chartModal" tabindex="-1" role="dialog"
+                            aria-labelledby="chartModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="chartModalLabel">Result Confidence Tag</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div id="chartContainer" style="text-align: right;" class="ml-auto">
+                                            <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         @hasrole('superadmin')
                             <li class="nav-item ml-3"><a href="{{ route('user.create') }}"><i class="mdi mdi-animation"></i></a>
                             </li>
                         @endhasrole
                     </ul>
-
-
                     <table id="datatable-buttons" class="table table-striped table-bordered w-100 text-center">
-
-
                         <thead>
                             <tr>
                                 <th>Question</th>
@@ -44,18 +66,19 @@
                                 <th class="custom-width">Yakin + Salah</th>
                                 <th class="custom-width">Tidak Yakin + Benar</th>
                                 <th class="custom-width">Tidak Yakin + Salah</th>
-
+                                <th class="custom-width">Waktu Yang Dibutuhkan</th>
                             </tr>
                         </thead>
 
                         <tbody>
-                            @foreach ($questions as $question)
+                            @foreach ($attempts as $attempt)
                                 <tr>
-                                    <td>{{ $question->question }}</td>
-                                    <td>{{ $question->yakin_benar }}</td>
-                                    <td>{{ $question->yakin_salah }}</td>
-                                    <td>{{ $question->tidak_yakin_benar }}</td>
-                                    <td>{{ $question->tidak_yakin_salah }}</td>
+                                    <td>{{ $attempt->question->question }}</td>
+                                    <td>{{ $attempt->yakin_benar }}</td>
+                                    <td>{{ $attempt->yakin_salah }}</td>
+                                    <td>{{ $attempt->tidak_yakin_benar }}</td>
+                                    <td>{{ $attempt->tidak_yakin_salah }}</td>
+                                    <td>{{ $attempt->time_taken }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -85,4 +108,48 @@
 
     <!-- Datatable init js -->
     <script src="{{ asset('assets_backend/pages/datatables.init.js') }}"></script>
+@endpush
+@push('custom-css')
+    <link href="{{ asset('assets_backend/css/emot.css') }}" rel="stylesheet">
+@endpush
+
+@push('after-script')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+@endpush
+
+@push('after-script')
+    <script>
+        window.onload = function() {
+            const xValues = ["Yakin + Benar", "Yakin + Salah", "Tidak Yakin + Benar", "Tidak Yakin + Salah"];
+            const yValues = [
+                {{ $totalScores['yakin_benar'] }},
+                {{ $totalScores['yakin_salah'] }},
+                {{ $totalScores['tidak_yakin_benar'] }},
+                {{ $totalScores['tidak_yakin_salah'] }},
+            ];
+            const barColors = [
+                "#b91d47",
+                "#00aba9",
+                "#2b5797",
+                "#e8c3b9",
+            ];
+
+            new Chart("myChart", {
+                type: "pie",
+                data: {
+                    labels: xValues,
+                    datasets: [{
+                        backgroundColor: barColors,
+                        data: yValues
+                    }]
+                },
+                options: {
+                    title: {
+                        display: true,
+                        text: "Parameter Confidence Tag-Sub Question Result"
+                    }
+                }
+            });
+        };
+    </script>
 @endpush

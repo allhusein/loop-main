@@ -20,6 +20,10 @@
                                         <th>NIM</th>
                                         <td>{{ $user->nim }}</td>
                                     </tr>
+                                    <tr>
+                                        <th>Kelas</th>
+                                        <td>{{ $user->kelas }}</td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -51,7 +55,10 @@
                                 <tr>
                                     <td>{{ $category->name }}</td>
                                     <td>{{ $category->nilai }}</td>
-                                    <td></td>
+                                    <td>
+                                        {{ sprintf('%02d:%02d:%02d', floor($category->total_waktu / 3600), floor(($category->total_waktu % 3600) / 60), $category->total_waktu % 60) }}
+                                    </td>
+                                    </td>
                                     <td>{{ $category->yakin_benar }}</td>
                                     <td>{{ $category->yakin_salah }}</td>
                                     <td>{{ $category->tidak_yakin_benar }}</td>
